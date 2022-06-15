@@ -3,21 +3,24 @@
 import React from 'react'
 import * as d3 from 'd3'
 import useD3 from '../Hooks/useD3'
+import { Svg } from '../Layout'
 
-const height = 50
-const width = 300
+const height = 60
+const width = 400
 const margin = {
   left: 10,
-  top: 20,
+  top: 10,
   right: 10,
-  bottom: 20,
+  bottom: 10,
 }
-const barHeight = 10
+const barHeight = 8
+const dotRadius = barHeight / 2 + 2
 const colorMap = {
-  optimal: 'green',
-  inRange: 'blue',
-  outOfRange: 'orange',
+  optimal: 'lightseagreen',
+  inRange: 'cornflowerblue',
+  outOfRange: 'coral',
 }
+const userDotColor = 'whitesmoke'
 
 const tranformData = (ranges) => {
   return [
@@ -47,38 +50,40 @@ function LevelChart({ ranges, result }) {
   const xScale = d3
     .scaleLinear()
     .domain([d3.min(rangeData, (d) => d.start), d3.max(rangeData, (d) => d.end)])
-    .range([0, width - (margin.left + margin.right)])
+    .range([margin.left, width - margin.right])
 
   const plotArea = (
-    <rect x={xScale(min)} width={xScale(max) - xScale(min)} y={0} height={barHeight} fill="gray" />
-  )
-
-  const axis = (
-    <g transform={`translate(0,${height - margin.bottom})`}>
-      {[min, max].map((d) => (
-        <text key={d} x={xScale(d)} y={0} fill="white" fontSize={10} textAnchor="middle">
-          {d}
-        </text>
-      ))}
+    <g transform={`translate(0,${height / 2 - barHeight / 2})`}>
+      <rect
+        x={xScale(min)}
+        width={xScale(max) - xScale(min)}
+        y={0}
+        height={barHeight}
+        fill="white"
+      />
     </g>
   )
 
   const sections = rangeData.map((d) => {
     return (
-      <rect
-        key={d.color}
-        x={xScale(d.start)}
-        width={xScale(d.end) - xScale(d.start)}
-        y={0}
-        height={barHeight}
-        fill={d.color}
-      />
+      <g
+        key={`${d.color}-${d.start}-${d.end}`}
+        transform={`translate(0,${height / 2 - barHeight / 2})`}
+      >
+        <rect
+          x={xScale(d.start)}
+          width={xScale(d.end) - xScale(d.start)}
+          y={0}
+          height={barHeight}
+          fill={d.color}
+        />
+      </g>
     )
   })
 
   const resultDot = (
-    <g>
-      <circle cx={xScale(result)} cy={height / 2 - margin.top} r={barHeight / 2} fill="red" />
+    <g transform={`translate(0,${height / 2})`}>
+      <circle cx={xScale(result)} cy={0} r={dotRadius} fill={userDotColor} />
       {/* <text
         x={xScale(result)}
         y={height - margin.bottom}
@@ -91,21 +96,38 @@ function LevelChart({ ranges, result }) {
     </g>
   )
 
+  const axis = (
+    <g transform={`translate(0,${height - margin.bottom})`}>
+      {[min, max].map((d, i) => (
+        <text
+          key={d}
+          x={xScale(d)}
+          y={0}
+          fill="white"
+          fontSize={10}
+          textAnchor={i === 0 ? 'start' : 'end'}
+        >
+          {d}
+        </text>
+      ))}
+    </g>
+  )
+
   return (
-    <svg
+    <Svg
       style={{
         width,
         height,
-        background: 'black',
+        overflow: 'visible',
       }}
     >
-      <g transform={`translate(${margin.left},${margin.top})`}>
+      <g>
         {plotArea}
-        {axis}
         {sections}
         {resultDot}
+        {axis}
       </g>
-    </svg>
+    </Svg>
   )
 }
 

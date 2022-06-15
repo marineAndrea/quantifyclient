@@ -3,21 +3,25 @@
 import React from 'react'
 import * as d3 from 'd3'
 // import useD3 from '../reusable/Hooks'
+import { Svg } from '../reusable/Layout'
 
 const height = 500
-const width = 500
+const width = 1000
 const margin = {
-  left: 20,
-  top: 20,
-  right: 20,
-  bottom: 20,
+  left: 10,
+  top: 10,
+  right: 10,
+  bottom: 10,
 }
-const barWidth = 10
-const colorMap = {
-  optimal: 'green',
-  inRange: 'blue',
-  outOfRange: 'orange',
-}
+const barWidth = 8
+
+// const itemOrder = Activity
+// Sleep
+// Heart
+
+// Inflammation
+// Metabolic
+// Hormonal
 
 function Axes({ data }) {
   const xScale = d3
@@ -31,41 +35,57 @@ function Axes({ data }) {
     .range([0, height - (margin.top + margin.bottom)])
 
   const plotArea = (
-    <rect
-      x={xScale(0)}
-      width={xScale(data.length) - xScale(0)}
-      y={0}
-      height={yScale(100)}
-      fill="gray"
-    />
+    <g transform="translate(0,0})">
+      <rect
+        x={xScale(0)}
+        width={xScale(data.length) - xScale(0)}
+        y={0}
+        height={yScale(100)}
+        fill="#181818"
+      />
+    </g>
   )
 
   const bars = data.map((d, i) => {
     return (
-      <rect
-        key={d.axis}
-        x={xScale(i)}
-        width={barWidth}
-        y={yScale(100) - yScale(d.result)}
-        height={yScale(d.result)}
-        fill="blue"
-      />
+      <g key={d.axis} transform={`translate(${width / data.length / 2},0)`}>
+        <rect
+          x={xScale(i)}
+          width={barWidth}
+          y={yScale(100) - yScale(d.result)}
+          height={yScale(d.result)}
+          fill="blue"
+        />
+        {/* <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="middle">
+          {d.axis}
+        </text> */}
+      </g>
+    )
+  })
+
+  const axis = data.map((d, i) => {
+    return (
+      <g key={d.axis} transform={`translate(${width / data.length / 2},${height - margin.bottom})`}>
+        <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="start">
+          {d.axis}
+        </text>
+      </g>
     )
   })
 
   return (
-    <svg
+    <Svg
       style={{
         width,
         height,
-        background: 'black',
       }}
     >
       <g transform={`translate(${margin.left},${margin.top})`}>
         {plotArea}
         {bars}
+        {axis}
       </g>
-    </svg>
+    </Svg>
   )
 }
 
