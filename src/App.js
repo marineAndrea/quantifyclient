@@ -8,6 +8,9 @@ import data from './data'
 import { Page, Tile, LayeredTile, Title } from './components/reusable/Layout'
 
 function App() {
+  const params = useParams()
+  console.log({ params })
+
   if (
     !data.axes ||
     !data.biomarker ||
@@ -17,9 +20,6 @@ function App() {
   ) {
     return null
   }
-
-  const params = useParams()
-  console.log({ params })
 
   return (
     <Page>

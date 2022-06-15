@@ -10,12 +10,12 @@ function Parameters({ biomarkerData, wearableData }) {
     if (!result || !ranges) {
       return null
     }
-    return ranges.outOfRange && result >= ranges.outOfRange[0] && result <= ranges.outOfRange[1]
-      ? 'Out Of Range'
+    return ranges.outOfRange && result >= ranges.optimal[0] && result <= ranges.optimal[1]
+      ? 'Optimal'
       : ranges.inRange && result >= ranges.inRange[0] && result <= ranges.inRange[1]
       ? 'In Range'
-      : ranges.optimal && result >= ranges.optimal[0] && result <= ranges.optimal[1]
-      ? 'Optimal'
+      : ranges.optimal && result >= ranges.outOfRange[0] && result <= ranges.outOfRange[1]
+      ? 'Out Of Range'
       : null
   }
   return (
