@@ -5,7 +5,7 @@ import * as d3 from 'd3'
 import useD3 from '../Hooks/useD3'
 import { Svg } from '../Layout'
 
-const height = 60
+const height = 200
 const width = 400
 const margin = {
   left: 10,
@@ -25,7 +25,7 @@ function LollipopChart({ data }) {
   const yScale = d3
     .scaleLinear()
     .domain([0, 100])
-    .range([0, height - (margin.top + margin.bottom)])
+    .range([height - (margin.top + margin.bottom), 0])
 
   const plotArea = (
     <g transform="translate(0,0)">
@@ -45,7 +45,7 @@ function LollipopChart({ data }) {
         <rect
           x={xScale(i)}
           width={barWidth}
-          y={yScale(100) - yScale(d.result)}
+          y={yScale(0) - yScale(d.result)}
           height={yScale(d.result)}
           fill="blue"
         />
@@ -56,7 +56,7 @@ function LollipopChart({ data }) {
     )
   })
 
-  const axis = data.map((d, i) => {
+  const axisBar = data.map((d, i) => {
     return (
       <g key={d.axis} transform={`translate(${width / data.length / 2},${height - margin.bottom})`}>
         <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="start">
@@ -65,6 +65,16 @@ function LollipopChart({ data }) {
       </g>
     )
   })
+
+  const tickValue = [...Array(10).keys()].map((v) => v * 10)
+  const yAxis = (
+    <g>
+      <line x1="0" y1={yScale(0)} x2="2" y2={yScale(100)} stroke="white" strokeWidth={1} />
+      {tickValue.map((t) => (
+        <line key={t} x1="-2" y1={yScale(t)} x2="0" y2={yScale(t)} stroke="white" strokeWidth={1} />
+      ))}
+    </g>
+  )
 
   return (
     <Svg
@@ -76,7 +86,8 @@ function LollipopChart({ data }) {
       <g transform={`translate(${margin.left},${margin.top})`}>
         {plotArea}
         {bars}
-        {axis}
+        {axisBar}
+        {yAxis}
       </g>
     </Svg>
   )
