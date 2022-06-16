@@ -23,14 +23,24 @@ function Parameters({ biomarkerData, wearableData }) {
             <Title>{i === 0 ? 'Biomarkers' : i === 1 ? 'Wearables' : ''}</Title>
 
             {data.map((d, index) => {
-              if (i === 0 && missingBiomarkerData.length && index === data.length - 1) {
-                return <div key={d.label}>Contact Support</div>
+              if (
+                (i === 0 && missingBiomarkerData.length && index === data.length - 1) ||
+                (i === 1 && missingWearableData.length && index === data.length - 1)
+              ) {
+                return (
+                  <div key={d.label} style={{ fontSize: '18px', paddingTop: '18px' }}>
+                    If data that your device should collect is missing, please contact
+                    support@getquantify.io to troubleshoot your wearable connection.
+                  </div>
+                )
               }
-              if (i === 1 && missingWearableData.length && index === data.length - 1) {
-                return <div key={d.label}>Contact Support</div>
-              }
+
               if (d.result === null) {
-                return <div key={d.label}>{d.label || null} Data are missing</div>
+                return (
+                  <div key={d.label} style={{ padding: '2px 0' }}>
+                    No {d.label || null} Data
+                  </div>
+                )
               }
 
               const userRange = getUserRange(d.result, d.ranges)
