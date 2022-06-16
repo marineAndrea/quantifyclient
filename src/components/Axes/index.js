@@ -3,89 +3,26 @@
 import React from 'react'
 import * as d3 from 'd3'
 // import useD3 from '../reusable/Hooks'
-import { Svg } from '../reusable/Layout'
-
-const height = 500
-const width = 1000
-const margin = {
-  left: 10,
-  top: 10,
-  right: 10,
-  bottom: 10,
-}
-const barWidth = 8
-
-// const itemOrder = Activity
-// Sleep
-// Heart
-
-// Inflammation
-// Metabolic
-// Hormonal
+import LollipopChart from '../reusable/LollipopChart'
+import { LayeredTile, GridContainer, Subtitle, Label } from '../reusable/Layout'
+import { GROUPED_AXES } from '../../consts'
 
 function Axes({ data }) {
-  const xScale = d3
-    .scaleLinear()
-    .domain([0, data.length])
-    .range([0, width - (margin.left + margin.right)])
-
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, 100])
-    .range([0, height - (margin.top + margin.bottom)])
-
-  const plotArea = (
-    <g transform="translate(0,0})">
-      <rect
-        x={xScale(0)}
-        width={xScale(data.length) - xScale(0)}
-        y={0}
-        height={yScale(100)}
-        fill="#181818"
-      />
-    </g>
-  )
-
-  const bars = data.map((d, i) => {
-    return (
-      <g key={d.axis} transform={`translate(${width / data.length / 2},0)`}>
-        <rect
-          x={xScale(i)}
-          width={barWidth}
-          y={yScale(100) - yScale(d.result)}
-          height={yScale(d.result)}
-          fill="blue"
-        />
-        {/* <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="middle">
-          {d.axis}
-        </text> */}
-      </g>
-    )
+  const biomkData = data.filter((d) => {
+    return d.category === 'biomarker'
   })
-
-  const axis = data.map((d, i) => {
-    return (
-      <g key={d.axis} transform={`translate(${width / data.length / 2},${height - margin.bottom})`}>
-        <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="start">
-          {d.axis}
-        </text>
-      </g>
-    )
+  const wearbData = data.filter((d) => {
+    return d.category === 'wearable'
   })
-
   return (
-    <Svg
-      style={{
-        width,
-        height,
-      }}
-    >
-      <g transform={`translate(${margin.left},${margin.top})`}>
-        {plotArea}
-        {bars}
-        {axis}
-      </g>
-    </Svg>
+    <GridContainer>
+      <div>
+        <LollipopChart data={biomkData} />
+      </div>
+      <div>
+        <LollipopChart data={wearbData} />
+      </div>
+    </GridContainer>
   )
 }
 

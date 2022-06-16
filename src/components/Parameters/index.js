@@ -4,56 +4,42 @@
 import React from 'react'
 import LevelChart from '../reusable/LevelChart'
 import { LayeredTile, GridContainer, Subtitle, Label } from '../reusable/Layout'
+import { getUserRange } from '../../utils'
 
 function Parameters({ biomarkerData, wearableData }) {
-  const getUserRange = (result, ranges) => {
-    if (!result || !ranges) {
-      return null
-    }
-    return ranges.outOfRange && result >= ranges.optimal[0] && result <= ranges.optimal[1]
-      ? 'Optimal'
-      : ranges.inRange && result >= ranges.inRange[0] && result <= ranges.inRange[1]
-      ? 'In Range'
-      : ranges.optimal && result >= ranges.outOfRange[0] && result <= ranges.outOfRange[1]
-      ? 'Out Of Range'
-      : null
-  }
+  console.log({ biomarkerData })
   return (
     <GridContainer>
-      <div>
-        <Subtitle>Biomarkers</Subtitle>
-        {biomarkerData.map((d) => {
-          const userRange = getUserRange(d.result, d.ranges)
-          return (
-            <LayeredTile key={d.label}>
-              <div>
-                <Label>{d.label}: </Label>
-                <span>{d.result} </span>
-                <span>{d.unit} </span>
-                <span style={{ fontWeight: 'bold' }}>{userRange}</span>
-              </div>
-              <LevelChart ranges={d.ranges} result={d.result} />
-            </LayeredTile>
-          )
-        })}
-      </div>
-      <div>
-        <Subtitle>Wearables</Subtitle>
-        {biomarkerData.map((d) => {
-          const userRange = getUserRange(d.result, d.ranges)
-          return (
-            <LayeredTile key={d.label}>
-              <div>
-                <Label>{d.label}: </Label>
-                <span>{d.result} </span>
-                <span>{d.unit} </span>
-                <span style={{ fontWeight: 'bold' }}>{userRange}</span>
-              </div>
-              <LevelChart ranges={d.ranges} result={d.result} />
-            </LayeredTile>
-          )
-        })}
-      </div>
+      {[biomarkerData, wearableData].map((data, i) => {
+        return (
+          <div key={data}>
+            <Subtitle>{i === 0 ? 'Biomarkers' : i === 1 ? 'Wearables' : ''}</Subtitle>
+            {data.map((d) => {
+              if (d.result === null) {
+                return <div>{d.label || null} Data are missing</div>
+              }
+
+              const userRange = getUserRange(d.result, d.ranges)
+
+              return (
+                <LayeredTile key={d.label}>
+                  <div>
+                    <Label>{d.label}</Label>
+                    <span>{`: ${userRange}`}</span>
+                  </div>
+                  <LevelChart
+                    ranges={d.ranges}
+                    result={d.result}
+                    unit={d.unit}
+                    comparisonPoint={d.otherScores ? d.otherScores[0] : null}
+                    userRange={userRange}
+                  />
+                </LayeredTile>
+              )
+            })}
+          </div>
+        )
+      })}
     </GridContainer>
   )
 }

@@ -39,7 +39,7 @@ const Subtitle = styled.h2`
 
 const Label = styled.h5`
   display: inline;
-  font-size: 16px;
+  font-size: 14px;
   margin: 12px 0;
 `
 
