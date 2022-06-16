@@ -4,7 +4,7 @@ import React from 'react'
 import LevelChart from '../reusable/LevelChart'
 import { LayeredTile, GridContainer, Title, Label } from '../reusable/Layout'
 import { getUserRange, camelCaseToLabel } from '../../utils'
-import { COLOR_MAP } from '../../consts'
+import { COLOR_MAP, HIGHLIGHTED_TEXT_COLOR } from '../../consts'
 
 function Parameters({ biomarkerData, wearableData }) {
   const filteredBiomarkerData = biomarkerData.filter((d) => d.result !== null)
@@ -80,7 +80,9 @@ function Parameters({ biomarkerData, wearableData }) {
                   <div>
                     <Label>{d.label}</Label>
                     {userRange && (
-                      <span style={{ fontSize: '16px' }}>{`: ${camelCaseToLabel(userRange)}`}</span>
+                      <span
+                        style={{ fontSize: '16px', color: HIGHLIGHTED_TEXT_COLOR }}
+                      >{`: ${camelCaseToLabel(userRange)}`}</span>
                     )}
                   </div>
                   <LevelChart

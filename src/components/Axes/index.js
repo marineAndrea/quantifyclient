@@ -13,10 +13,10 @@ function Axes({ data }) {
   return (
     <GridContainer>
       <div>
-        <LollipopChart data={biomkData} showAxis={false} />
+        <LollipopChart data={biomkData} unit="%" showAxis={false} />
       </div>
       <div>
-        <LollipopChart data={wearbData} showAxis />
+        <LollipopChart data={wearbData} unit="%" showAxis />
       </div>
     </GridContainer>
   )

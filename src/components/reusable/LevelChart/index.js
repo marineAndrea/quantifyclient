@@ -109,7 +109,7 @@ function LevelChart({ ranges, result, unit }) {
               key={d}
               x={xScale(d)}
               y={barHeight * 2}
-              fill="white"
+              fill={HIGHLIGHTED_TEXT_COLOR}
               fontSize={10}
               textAnchor={i === 0 ? 'start' : 'end'}
             >
@@ -131,7 +131,7 @@ function LevelChart({ ranges, result, unit }) {
               <text
                 x={xScale(ranges[s][0])}
                 y={barHeight * 2}
-                fill="white"
+                fill={HIGHLIGHTED_TEXT_COLOR}
                 fontSize={10}
                 textAnchor="middle"
               >
@@ -140,7 +140,7 @@ function LevelChart({ ranges, result, unit }) {
               <text
                 x={xScale(ranges[s][1])}
                 y={barHeight * 2}
-                fill="white"
+                fill={HIGHLIGHTED_TEXT_COLOR}
                 fontSize={10}
                 textAnchor="middle"
               >

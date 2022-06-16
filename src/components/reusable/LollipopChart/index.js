@@ -15,7 +15,7 @@ const margin = {
 
 const barWidth = 2
 
-function LollipopChart({ data }) {
+function LollipopChart({ data, unit }) {
   const xScale = d3
     .scaleLinear()
     .domain([0, data.length])
@@ -65,6 +65,7 @@ function LollipopChart({ data }) {
           textAnchor="middle"
         >
           {d.result}
+          {unit}
         </text>
         <text
           key={d}
