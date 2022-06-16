@@ -1,24 +1,28 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import * as d3 from 'd3'
 import { Svg } from '../Layout'
-import { tranformParametersData, camelCaseToLabel } from '../../../utils'
+import { tranformParametersData, camelCaseToLabel, strToLabel } from '../../../utils'
 
-const height = 120
+const height = 100
 const width = 400
 const margin = {
   left: 0,
   top: 10,
   right: 0,
-  bottom: 30,
+  bottom: 10,
 }
 const barHeight = 8
 const dotRadius = barHeight / 2 + 2
-const userDotColor = 'WhiteSmoke'
+const defaultColor = 'silver'
+const hightlightColor = 'white'
 
 function LevelChart({ ranges, result, unit, comparisonPoint, userRange }) {
-  const [sectionShown, setSectionShown] = useState(false)
+  const [sectionHighlighted, setSectionHightlight] = useState(false)
+  const [targetHighlighted, setTargetHighlight] = useState(false)
+  const [userHighlighted, setUserHighlight] = useState(false)
 
   if (!ranges) {
     return null
@@ -54,8 +58,8 @@ function LevelChart({ ranges, result, unit, comparisonPoint, userRange }) {
       <g
         key={`${d.color}-${d.start}-${d.end}`}
         transform={`translate(0,${-barHeight / 2})`}
-        onMouseEnter={() => setSectionShown(i)}
-        onMouseLeave={() => setSectionShown(false)}
+        onMouseEnter={() => setSectionHightlight(i)}
+        onMouseLeave={() => setSectionHightlight(false)}
       >
         <rect
           x={xScale(d.start)}
@@ -63,20 +67,26 @@ function LevelChart({ ranges, result, unit, comparisonPoint, userRange }) {
           y={0}
           height={barHeight}
           fill={d.color}
-          opacity={sectionShown === i ? 1 : 0.9}
+          opacity={sectionHighlighted === i ? 1 : 0.8}
         />
       </g>
     )
   })
 
   const resultDot = result ? (
-    <g>
-      <circle cx={xScale(result)} cy={0} r={dotRadius} fill={userDotColor} strokeWidth="3" />
+    <g onMouseEnter={() => setUserHighlight(true)} onMouseLeave={() => setUserHighlight(false)}>
+      <circle
+        cx={xScale(result)}
+        cy={0}
+        r={dotRadius}
+        fill={userHighlighted ? hightlightColor : defaultColor}
+        strokeWidth="3"
+      />
       <text
         x={xScale(result)}
         y={-barHeight * 2}
-        fill={userDotColor}
-        fontSize={11}
+        fill={userHighlighted ? hightlightColor : defaultColor}
+        fontSize={13}
         fontWeight="bold"
         textAnchor="middle"
       >
@@ -87,17 +97,16 @@ function LevelChart({ ranges, result, unit, comparisonPoint, userRange }) {
 
   const comparisonDot =
     comparisonPoint && comparisonPoint.score && comparisonPoint.comparison ? (
-      <g>
-        <circle cx={xScale(comparisonPoint.score)} cy={0} r={dotRadius - 2} fill={userDotColor} />
-        <text
-          x={xScale(comparisonPoint.score)}
-          y={barHeight * 2}
-          fill={userDotColor}
-          fontSize={9}
-          textAnchor="middle"
-        >
-          {`${comparisonPoint.comparison}: ${comparisonPoint.score}`}
-        </text>
+      <g
+        onMouseEnter={() => setTargetHighlight(true)}
+        onMouseLeave={() => setTargetHighlight(false)}
+      >
+        <circle
+          cx={xScale(comparisonPoint.score)}
+          cy={0}
+          r={dotRadius - 2}
+          fill={targetHighlighted ? hightlightColor : defaultColor}
+        />
       </g>
     ) : null
 
@@ -120,25 +129,45 @@ function LevelChart({ ranges, result, unit, comparisonPoint, userRange }) {
 
   const legend = (
     <g transform={`translate(0,${height - margin.bottom})`}>
+      <text
+        x={0}
+        y={0}
+        fill={targetHighlighted ? hightlightColor : defaultColor}
+        fontSize={11}
+        textAnchor="start"
+        fontWeight="bold"
+      >
+        {strToLabel(comparisonPoint.comparison)}:
+      </text>
+      <text
+        x={80}
+        y={0}
+        fill={targetHighlighted ? hightlightColor : defaultColor}
+        fontSize={11}
+        textAnchor="start"
+        fontWeight="bold"
+      >
+        {comparisonPoint.score}
+      </text>
       {Object.entries(ranges).map(([key, value], i) => (
         <g key={`${key}-${value}`}>
           <text
-            x={0}
-            y={i * 16}
-            fill="white"
-            fontSize={10}
-            textAnchor="start"
-            fontWeight={sectionShown === i ? 'bold' : 'normal'}
+            x={key !== 'optimal' ? width - 80 : 0}
+            y={key === 'optimal' ? 16 : key === 'inRange' ? 0 : 16}
+            fill={sectionHighlighted === i ? hightlightColor : defaultColor}
+            fontSize={11}
+            textAnchor={key !== 'optimal' ? 'end' : 'start'}
+            fontWeight="bold"
           >
             {camelCaseToLabel(key)}:
           </text>
           <text
-            x={80}
-            y={i * 16}
-            fill="white"
-            fontSize={10}
-            textAnchor="start"
-            fontWeight={sectionShown === i ? 'bold' : 'normal'}
+            x={key !== 'optimal' ? width : 80}
+            y={key === 'optimal' ? 16 : key === 'inRange' ? 0 : 16}
+            fill={sectionHighlighted === i ? hightlightColor : defaultColor}
+            fontSize={11}
+            textAnchor={key !== 'optimal' ? 'end' : 'start'}
+            fontWeight="bold"
           >
             {`[${value[0]}, ${value[1]}]`}
           </text>
@@ -159,8 +188,8 @@ function LevelChart({ ranges, result, unit, comparisonPoint, userRange }) {
         <g transform={`translate(0,${height / 3 + margin.top})`}>
           {plotArea}
           {sections}
-          {comparisonDot}
           {resultDot}
+          {comparisonDot}
           {axis}
         </g>
         {legend}

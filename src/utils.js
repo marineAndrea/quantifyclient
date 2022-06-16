@@ -49,9 +49,16 @@ const formatTime = (iso) => {
   return d3.timeFormat('%d-%b-%y %H:%M %p')(new Date(iso))
 }
 
-const camelCaseToLabel = (str) => {
-  const text = str.replace(/([A-Z])/g, ' $1')
-  return text.charAt(0).toUpperCase() + text.slice(1)
+const strToLabel = (str) => {
+  const arr = str.split(' ').map((w) => {
+    return `${w.charAt(0).toUpperCase()}${w.slice(1)}`
+  })
+  return arr.join(' ')
 }
 
-export { tranformParametersData, getUserRange, formatTime, camelCaseToLabel }
+const camelCaseToLabel = (str) => {
+  const text = str.replace(/([A-Z])/g, ' $1')
+  return strToLabel(text)
+}
+
+export { tranformParametersData, getUserRange, formatTime, strToLabel, camelCaseToLabel }
