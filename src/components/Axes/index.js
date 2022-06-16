@@ -1,11 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react'
-import * as d3 from 'd3'
-// import useD3 from '../reusable/Hooks'
 import LollipopChart from '../reusable/LollipopChart'
-import { LayeredTile, GridContainer, Subtitle, Label } from '../reusable/Layout'
-import { GROUPED_AXES } from '../../consts'
+import { GridContainer } from '../reusable/Layout'
 
 function Axes({ data }) {
   const biomkData = data.filter((d) => {
@@ -17,10 +13,10 @@ function Axes({ data }) {
   return (
     <GridContainer>
       <div>
-        <LollipopChart data={biomkData} />
+        <LollipopChart data={biomkData} showAxis={false} />
       </div>
       <div>
-        <LollipopChart data={wearbData} />
+        <LollipopChart data={wearbData} showAxis />
       </div>
     </GridContainer>
   )

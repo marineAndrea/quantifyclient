@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import * as d3 from 'd3'
 import { Svg } from '../Layout'
-import { tranformParametersData, camelCaseToLabel, strToLabel } from '../../../utils'
+import { tranformParametersData, camelCaseToLabel } from '../../../utils'
+import { HIGHLIGHTED_TEXT_COLOR } from '../../../consts'
 
 const height = 60
 const width = 400
@@ -16,10 +16,8 @@ const margin = {
 }
 const barHeight = 8
 const dotRadius = barHeight / 2 + 2
-const defaultColor = 'silver'
-const hightlightColor = 'white'
 
-function LevelChart({ ranges, result, unit, comparisonPoint }) {
+function LevelChart({ ranges, result, unit }) {
   const [sectionHighlighted, setSectionHightlight] = useState(false)
 
   const flattenArray = Object.values(ranges || []).flat(2)
@@ -70,11 +68,17 @@ function LevelChart({ ranges, result, unit, comparisonPoint }) {
 
   const resultDot = result ? (
     <g>
-      <circle cx={xScale(result)} cy={0} r={dotRadius} fill={hightlightColor} strokeWidth="3" />
+      <circle
+        cx={xScale(result)}
+        cy={0}
+        r={dotRadius}
+        fill={HIGHLIGHTED_TEXT_COLOR}
+        strokeWidth="3"
+      />
       <text
         x={xScale(result)}
         y={-barHeight * 2}
-        fill={hightlightColor}
+        fill={HIGHLIGHTED_TEXT_COLOR}
         fontSize={13}
         fontWeight="bold"
         textAnchor="middle"
@@ -91,7 +95,7 @@ function LevelChart({ ranges, result, unit, comparisonPoint }) {
   //         cx={xScale(comparisonPoint.score)}
   //         cy={0}
   //         r={dotRadius - 2}
-  //         fill={hightlightColor}
+  //         fill={HIGHLIGHTED_TEXT_COLOR}
   //       />
   //     </g>
   //   ) : null

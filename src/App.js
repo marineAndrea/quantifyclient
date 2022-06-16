@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-indent */
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'

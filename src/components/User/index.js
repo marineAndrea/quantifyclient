@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { Title, GridContainer } from '../reusable/Layout'
+import { Title, GridContainer, Label } from '../reusable/Layout'
 import { formatTime } from '../../utils'
 
 function User({ data }) {
@@ -8,8 +8,8 @@ function User({ data }) {
     <>
       <Title>{data.name}</Title>
       <div>
-        <span>{data.gender === 'F' ? 'Female, ' : 'Male, '}</span>
-        <span>{data.age} years old</span>
+        <Label>{data.gender === 'F' ? 'Female, ' : 'Male, '}</Label>
+        <Label>{data.age} years old</Label>
       </div>
       <div>{data.email}</div>
       <GridContainer style={{ gridTemplateColumns: '120px auto' }}>

@@ -53,13 +53,13 @@ const getUserRange = (result, ranges) => {
     return null
   }
   return ranges.optimal.length === 2 && result >= ranges.optimal[0] && result <= ranges.optimal[1]
-    ? 'Optimal'
+    ? 'optimal'
     : ranges.inRange.length === 2 && result >= ranges.inRange[0] && result <= ranges.inRange[1]
-    ? 'In Range'
+    ? 'inRange'
     : ranges.outOfRange.length === 2 &&
       result >= ranges.outOfRange[0] &&
       result <= ranges.outOfRange[1]
-    ? 'Out Of Range'
+    ? 'outOfRange'
     : ''
 }
 

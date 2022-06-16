@@ -1,20 +1,19 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react'
 import * as d3 from 'd3'
-import useD3 from '../Hooks/useD3'
 import { Svg } from '../Layout'
+import { PERCENTILE_COLOR_MAP, HIGHLIGHTED_TEXT_COLOR, DEFAULT_TEXT_COLOR } from '../../../consts'
 
-const height = 200
+const height = 280
 const width = 400
 const margin = {
   left: 10,
-  top: 10,
+  top: 30,
   right: 10,
-  bottom: 10,
+  bottom: 40,
 }
 
-const barWidth = 8
+const barWidth = 2
 
 function LollipopChart({ data }) {
   const xScale = d3
@@ -25,56 +24,71 @@ function LollipopChart({ data }) {
   const yScale = d3
     .scaleLinear()
     .domain([0, 100])
-    .range([height - (margin.top + margin.bottom), 0])
+    .range([0, height - (margin.top + margin.bottom)])
 
   const plotArea = (
     <g transform="translate(0,0)">
       <rect
         x={xScale(0)}
         width={xScale(data.length) - xScale(0)}
-        y={0}
-        height={yScale(100)}
-        fill="#181818"
+        y={yScale(100)}
+        height={yScale(0) - yScale(100)}
+        fill="gray"
       />
     </g>
   )
 
   const bars = data.map((d, i) => {
-    return (
-      <g key={d.axis} transform={`translate(${width / data.length / 2},0)`}>
-        <rect
-          x={xScale(i)}
-          width={barWidth}
-          y={yScale(0) - yScale(d.result)}
-          height={yScale(d.result)}
-          fill="blue"
-        />
-        {/* <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="middle">
-          {d.axis}
-        </text> */}
-      </g>
-    )
-  })
+    // eslint-disable-next-line no-unused-vars
+    const resultColor = Object.entries(PERCENTILE_COLOR_MAP).filter(([key, val]) => {
+      return d.result >= val[0] && d.result <= val[1]
+    })[0][0]
 
-  const axisBar = data.map((d, i) => {
     return (
-      <g key={d.axis} transform={`translate(${width / data.length / 2},${height - margin.bottom})`}>
-        <text key={d} x={xScale(i)} y={0} fill="white" fontSize={10} textAnchor="start">
+      <g
+        key={d.axis}
+        transform={`translate(${xScale(data.length) / data.length / 2},${yScale(100)})`}
+      >
+        <rect
+          x={xScale(i) - barWidth / 2}
+          width={barWidth}
+          y={-yScale(d.result)}
+          height={yScale(d.result)}
+          fill={DEFAULT_TEXT_COLOR}
+        />
+        <circle cx={xScale(i)} cy={-yScale(d.result)} r={5} fill={resultColor} strokeWidth="3" />
+        <text
+          x={xScale(i)}
+          y={-yScale(d.result) - 10}
+          fill={HIGHLIGHTED_TEXT_COLOR}
+          fontSize={16}
+          textAnchor="middle"
+        >
+          {d.result}
+        </text>
+        <text
+          key={d}
+          x={xScale(i)}
+          y={20}
+          fill={HIGHLIGHTED_TEXT_COLOR}
+          fontSize={16}
+          textAnchor="middle"
+        >
           {d.axis}
         </text>
       </g>
     )
   })
 
-  const tickValue = [...Array(10).keys()].map((v) => v * 10)
-  const yAxis = (
-    <g>
-      <line x1="0" y1={yScale(0)} x2="2" y2={yScale(100)} stroke="white" strokeWidth={1} />
-      {tickValue.map((t) => (
-        <line key={t} x1="-2" y1={yScale(t)} x2="0" y2={yScale(t)} stroke="white" strokeWidth={1} />
-      ))}
-    </g>
-  )
+  // const tickValues = [...Array(11).keys()].map((v) => v * 10)
+  // const yAxis = showAxis ? (
+  //   <g transform={`translate(${margin.left},0)`}>
+  //     <line x1="0" y1={yScale(0)} x2="2" y2={yScale(100)} stroke={HIGHLIGHTED_TEXT_COLOR} strokeWidth={1} />
+  //     {tickValues.map((t) => (
+  //       <line key={t} x1="-2" y1={yScale(t)} x2="0" y2={yScale(t)} stroke={HIGHLIGHTED_TEXT_COLOR} strokeWidth={1} />
+  //     ))}
+  //   </g>
+  // ) : null
 
   return (
     <Svg
@@ -86,8 +100,7 @@ function LollipopChart({ data }) {
       <g transform={`translate(${margin.left},${margin.top})`}>
         {plotArea}
         {bars}
-        {axisBar}
-        {yAxis}
+        {/* {yAxis} */}
       </g>
     </Svg>
   )

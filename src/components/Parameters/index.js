@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react'
 import LevelChart from '../reusable/LevelChart'
@@ -71,10 +70,18 @@ function Parameters({ biomarkerData, wearableData }) {
               }
 
               return (
-                <LayeredTile key={d.label}>
+                <LayeredTile
+                  key={d.label}
+                  style={{
+                    border: `1px solid ${COLOR_MAP[userRange] || 'transparent'}`,
+                    borderRadius: '2px',
+                  }}
+                >
                   <div>
                     <Label>{d.label}</Label>
-                    {userRange && <span style={{ fontSize: '16px' }}>{`: ${userRange}`}</span>}
+                    {userRange && (
+                      <span style={{ fontSize: '16px' }}>{`: ${camelCaseToLabel(userRange)}`}</span>
+                    )}
                   </div>
                   <LevelChart
                     ranges={d.ranges}
